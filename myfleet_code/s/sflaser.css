@@ -1,0 +1,33 @@
+body { padding:0.1em 0.3em; font-family:verdana,arial,sans-serif; }
+
+/* header div wraps header html plus menu */
+#header { width:100%; }
+
+/* menu table */
+#menubar table { width:100%; padding:0.3em 0 0.3em 0; }
+#menubar tr { background-color:#cc0000; }
+#menubar td { padding:0.3em 0.4em; font-size:medium; }
+#menubar a { text-decoration:none; }
+#menubar a.current { color:#ffff66; }
+#menubar a.menu { color:#ffffff; }
+
+/* main body div */
+#main { width:100%; }
+
+/* left column of home page */
+#left { width:58%; float:left; margin-bottom:1em; }
+
+/* right column of home page */
+#right { width:41%; float:right; margin-bottom:1em; }
+
+/* footer on every page */
+#footer { clear:both; padding-top:0.5em; font-size:0.8em; text-align:center; color:#ddd; border-top:1px dashed #eee; margin-top:3em; }
+#footer a { color:#ddd; }
+
+a.mbaction { font-weight:bold; }
+.ttitle { font-weight:bolder; font-size:large; }
+table.score { width:100%; border-collapse:collapse; }
+table.score td { padding:2px 4px; font-size:0.8em; }
+tr.scoreHead { background-color:#ccc; font-weight:bold;}
+tr.score1 { background-color:#fff; }
+tr.score2 { background-color:#efefd1; }
