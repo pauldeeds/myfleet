@@ -99,7 +99,7 @@ sub display_page
 	}
 
 	my $output_folder = $ENV{'DOCUMENT_ROOT'} . '/captcha/';
-	my $data_folder = '/usr/local/apache2/captcha/' . $ENV{'SERVER_NAME'};
+	my $data_folder = $ENV{'DOCUMENT_ROOT'} . '../captcha/' . $ENV{'SERVER_NAME'};
 	if( ! -e $data_folder ) { File::Path::mkpath($data_folder); }
 	my $captcha = Authen::Captcha->new();
 	my $md5sum;

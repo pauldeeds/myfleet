@@ -1,0 +1,15 @@
+
+1. Install package prerequisites - apt.bash
+2. Install cpan packages (if tar fails you need more memory)
+3. create dev database
+	a. mysql -uroot -p<mysqlrootpassword> < grant.sql
+	b. mysql -udev -pdev dev < tables.sql
+	c. mysql -udev -pdev dev < setup-forum.sql
+4. create nobody writable data folder for Authen::Captcha code file
+	a. /var/www/captcha/
+
+5. setup virtual host apache config
+	a. symlink dev.myfleet.org-apache.conf into /etc/apache/sites-available
+	b. symlink from /etc/apache/sites-enabled to above conf in sites-available (or use a2ensite)
+	c. restart apache
+
