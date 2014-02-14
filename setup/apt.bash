@@ -1,6 +1,7 @@
 apt-get install build-essential
 apt-get install unzip
 apt-get install apache2
+apt-get install apache2-threaded-dev
 apt-get install mysql-server
 
 # apt-get install ncftp

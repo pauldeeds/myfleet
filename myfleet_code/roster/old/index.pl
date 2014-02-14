@@ -3,8 +3,6 @@
 use diagnostics;
 use strict;
 
-use lib '/usr/local/apache2/mylib/myfleet.org/';
-
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 use Myfleet::DB;

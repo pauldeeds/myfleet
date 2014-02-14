@@ -3,9 +3,6 @@
 #use strict;
 use diagnostics;
 
-use lib '/usr/local/apache2/mylib/myfleet.org/';
-use lib '/usr/local/apache2/mylib/express27.org/';
-
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 use MyfleetConfig qw(%config);
