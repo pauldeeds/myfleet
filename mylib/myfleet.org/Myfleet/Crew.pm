@@ -401,7 +401,7 @@ sub display_detail
 	$q->param('i') || die "no user id specified.";
 
 	my $output_folder = $ENV{'DOCUMENT_ROOT'} . '/captcha/';
-	my $data_folder = '/usr/local/apache2/captcha/' . $ENV{'SERVER_NAME'};
+	my $data_folder = $ENV{'DOCUMENT_ROOT'} . '../captcha/' . $ENV{'SERVER_NAME'};
 	if( ! -e $data_folder ) { File::Path::mkpath($data_folder); }
 	my $captcha = Authen::Captcha->new();
 	$captcha->data_folder( $data_folder );
