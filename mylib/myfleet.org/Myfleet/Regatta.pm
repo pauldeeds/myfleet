@@ -171,27 +171,32 @@ sub display_regatta_header
 	my $dbh = Myfleet::DB::connect();
 	my $sth = $dbh->prepare("select id, date_format(startdate,'%M %e') startdate, date_format(enddate,'%M %e') enddate, date_format(startdate,'%Y') as year, name, venue, contact, series1, series2, series3, series4, series5, url, result, description, story from regatta where id = ?") || die $DBI::errstr;
 	$sth->execute($id) || die $DBI::errstr;
-	my ( $regatta ) = $sth->fetchrow_hashref;
 
-	$sth = $dbh->prepare("select id, name, url from venue where id = ?");
-	$sth->execute($regatta->{venue});
-	my ( $venue ) = $sth->fetchrow_hashref;
-	$venue->{url} =~ s/^http:\/\///i;
+	if ($sth->rows)
+	{
+		my ( $regatta ) = $sth->fetchrow_hashref;
 
-	push @ret,
-		Myfleet::Header::display_header( $config{'EventsMenu'}, '..', "$regatta->{'name'} @ $venue->{'name'} ($regatta->{'year'}) - $config{'defaultTitle'}" ),
-		'<br/>',
-		'<table border="0" cellpadding="4" cellspacing="2" width="100%">',
-			'<tr bgcolor="silver">',
-				'<td align="center">',
-					"<big>$regatta->{name}</big>",
-					( $regatta->{venue} ? ( $venue->{url} ? " at <a href=\"http://$venue->{url}\">$venue->{name}</a>" : " at $venue->{name}" ) : ""),
-				'</td>',
-				'<td align="center"><b>',
-					Myfleet::Util::display_date( $regatta->{startdate}, $regatta->{enddate} ),
-				'</b></td>',
-			'</tr>',
-		"</table>";
+		$sth = $dbh->prepare("select id, name, url from venue where id = ?");
+		$sth->execute($regatta->{venue});
+		my ( $venue ) = $sth->fetchrow_hashref;
+
+		$venue->{url} =~ s/^http:\/\///i;
+
+		push @ret,
+			Myfleet::Header::display_header( $config{'EventsMenu'}, '..', "$regatta->{'name'} @ $venue->{'name'} ($regatta->{'year'}) - $config{'defaultTitle'}" ),
+			'<br/>',
+			'<table border="0" cellpadding="4" cellspacing="2" width="100%">',
+				'<tr bgcolor="silver">',
+					'<td align="center">',
+						"<big>$regatta->{name}</big>",
+						( $regatta->{venue} ? ( $venue->{url} ? " at <a href=\"http://$venue->{url}\">$venue->{name}</a>" : " at $venue->{name}" ) : ""),
+					'</td>',
+					'<td align="center"><b>',
+						Myfleet::Util::display_date( $regatta->{startdate}, $regatta->{enddate} ),
+					'</b></td>',
+				'</tr>',
+			"</table>";
+	}
 
 	return @ret;
 }

@@ -25,7 +25,7 @@ sub display_page
 	my @ret;
 
 
-	if ( $q->param('f') ) {
+	if ( $q->param('f') && ! $q->param('r') ) {
 		$q->param('r', $q->param('f') - 1000 );
 	}
 

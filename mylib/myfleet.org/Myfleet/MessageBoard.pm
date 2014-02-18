@@ -621,6 +621,7 @@ sub display_page
 		else
 		{
 			push @ret,
+				"<!-- hello $p{'r'} -->",
 				'<table border="0" cellpadding="4" cellspacing="0" width="100%">',
 					'<tr>',
 						'<td width="40%" valign="top">', 
@@ -1176,7 +1177,7 @@ sub html_msg
 sub format_text
 {
 	my ( $text ) = @_;
-	local($Text::Wrap::columns = 70);
+	$Text::Wrap::columns = 70;
 	my @final = ();
 	my @format = ();
 
@@ -1200,7 +1201,7 @@ sub format_text
 sub quote_text
 {
 	my ( $text ) = @_;
-	local($Text::Wrap::columns = 60);
+	$Text::Wrap::columns = 60;
 	my @final = ();
 	my @format = ();
 	foreach my $line ( split /\r\n/, $text ) { 
