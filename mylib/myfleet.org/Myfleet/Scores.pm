@@ -1235,4 +1235,97 @@ sub display_thursday_highpoint
 	return @ret;
 }
 
+# used by rycsunday.myfleet.org
+sub display_sunday_highpoint
+{
+	my $year = shift || $config{'defaultYear'};
+	my $boatname = shift;
+	my $format = shift || "All";
+	my $type = shift || "series1";
+
+	my $bestWeeks = 6; # your score is based on the best X weeks
+	my $participationPoints = 1; # you also get this number of points for each week you participate
+
+	my @ret;
+
+	my $dbh = Myfleet::DB::connect();
+	my $sth = $dbh->prepare("select result, name, $type, id from regatta where $type > 0 and startdate < now() and year(startdate) = ? order by startdate") || die $DBI::errstr;
+	$sth->execute( $year ) || die $DBI::errstr;
+
+	my %highpoint = ();
+	my %highpointreggattas = ();
+	my %highpointpeople = ();
+	my %highpointbest = ();
+	while ( my ( $result ) = $sth->fetchrow_array )
+	{
+		next if ( ! $result || length( $result ) < 10 );
+		my @line = split /\n/, $result;
+		my $numboats = $#line + 1;
+		foreach ( @line )
+		{
+			my ( $pos, $sailnumber, $people, @rest ) = split /\s*,\s*/;
+
+			my $thisScore = ( $numboats - $pos ) + 1;
+			#see if this score should get added
+			my $scorecnt = $#{$highpointbest{$sailnumber}} + 1; #returns last index, not count
+
+			#keep only best scores			
+			if ($scorecnt < $bestWeeks)
+			{
+				push @{$highpointbest{$sailnumber}}, $thisScore;
+			}
+			else
+			{
+				@{$highpointbest{$sailnumber}} = sort {$b <=> $a} @{$highpointbest{$sailnumber}};
+				if (${$highpointbest{$sailnumber}}[$scorecnt-1] < $thisScore)
+				{
+				   ${$highpointbest{$sailnumber}}[$scorecnt-1] = $thisScore;
+				}
+			}
+			$highpointregattas{$sailnumber}++;
+			$highpointpeople{$sailnumber}{$people}++;
+		}
+	}
+	
+	foreach my $sailnumber (keys %highpointbest)
+	{
+		my $totalScore = 0;
+		foreach my $score (@{$highpointbest{$sailnumber}})
+		{
+  		    $totalScore += $score;
+		}
+		$totalScore += $highpointregattas{$sailnumber} * $participationPoints;  # each sailor earns 1 extra point for every sunday sailed (even beyond max)
+		$highpoint{$sailnumber} = $totalScore;
+	}
+
+	push @ret,
+		'<table border=0 cellpadding=2 cellspacing=0 width="100%">',
+			'<tr bgcolor="#d1d1d1">',
+			"<th><small>Pos</small></th><th align=left><small>Sail #</small></th><th><small>People</small></th><th><small>Points</small></th><th><small>Events</small></th>",
+    		'</tr>';
+
+	my $pos = 1;
+	foreach my $sailnumber ( sort { $highpoint{$b} <=> $highpoint{$a} } keys %highpoint )
+	{
+		push @ret, ( ( $linenum++ % 2 ) ? "<tr bgcolor=\"#efefd1\">" : "<tr bgcolor=white>" ),
+			"<td align=center><small>$pos</small></td>",
+			"<td><small>$sailnumber</small></td>",
+			"<td><span style=\"font-size:0.6em\">";
+
+		foreach my $person ( keys %{$highpointpeople{$sailnumber}} )
+		{
+			push @ret, "$person<br>";
+		}
+		push @ret, "</span></td>";
+		push @ret, 
+			"<td align=center><small>$highpoint{$sailnumber}</small></td>",
+			"<td align=center><small>$highpointregattas{$sailnumber}</small></td>\n";
+		$pos++;
+	}
+
+	push @ret, "</table>";
+
+	return @ret;
+}
+
 1;
