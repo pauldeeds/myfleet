@@ -34,14 +34,31 @@ sub display_header
 	$toroot ||= "..";
 	$current ||= "";
 
-	my $stylesheet = $config{'style'} || 'myfleet.css'; 
+	my $stylesheet = $config{'style'} || 'myfleet.css';
+	my $external_style = $config{'external_style'} || '';
+	my $external_script = $config{'external_script'} || '';
 	my @ret;
+
+	my $style_html = '';
+	my $js_html = '';
+
+	if ($external_style)
+	{
+		$style_html = "<link rel=\"stylesheet\" type=\"text/css\" href=\"$external_style\">";
+	}
+
+	if ($external_script)
+	{
+		$script_html = "<link rel=\"javascript\" defer=\"defer\" type=\"text/javascript\" href=\"$external_script\">";
+	}
 
 	push @ret,
 	        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n",
-   "\"http://www.w3.org/TR/html4/loose.dtd\">\n",
+  			"\"http://www.w3.org/TR/html4/loose.dtd\">\n",
 		"<head>",
 			"<link rel=\"stylesheet\" type=\"text/css\" href=\"/s/$stylesheet\">",
+			$style_html,
+			$script_html,
 			"<title>$title</title>",
 		"</head>\n",
 		"<body>",
