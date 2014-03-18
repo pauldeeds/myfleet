@@ -1263,7 +1263,7 @@ sub display_open570_highpoint
 		{
 			my ( $pos, $sailnumber, $people, @rest ) = split /\s*,\s*/;
 
-			my $thisScore = 1 + ( 9 / $numboats ) * ( $numboats - $pos ) + 0.5;
+			my $thisScore = 1 + ( 9 / $numboats ) * ( $numboats - $pos + 0.5 );
 			#see if this score should get added
 			my $scorecnt = $#{$highpointbest{$sailnumber}} + 1; #returns last index, not count
 
