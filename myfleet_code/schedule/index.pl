@@ -64,7 +64,7 @@ sub display_page
 		if ( $q->param('Looking') || $q->param('Sailing') )
 		{
 			my $status = ( $q->param('Looking') ? 'Looking' : 'Sailing' );
-			if ( $note !~ /href=/ )
+			if ( $note !~ /href=/ && $note !~ /http/ )
 			{
 				my $sth = $dbh->prepare("insert into boats ( regattaid, sailnumber, skipper, crew, note, status ) values (?,?,?,?,?,?)");
 				$sth->execute( $q->param('r'), $sailnumber, $skipper, $boatname, $note, $status );

@@ -14,16 +14,16 @@ sub display_schedule
 
 	my @ret;
 	my $dbh = Myfleet::DB::connect();
-	my $sth = $dbh->prepare("select result, name, $type, id, date_format(startdate,'%b %e'), date_format(enddate,'%b %e') from regatta where $type > 0 and year(startdate) = $year order by startdate") || die $DBI::errstr;
+	my $sth = $dbh->prepare("select result, name, $type, id, date_format(startdate,'%b %e'), date_format(enddate,'%b %e'), unix_timestamp(startdate) < unix_timestamp(now()) as 'inpast' from regatta where $type > 0 and year(startdate) = $year order by startdate") || die $DBI::errstr;
 	$sth->execute();
-	
+
 	push @ret, "<table width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">\n";
 
 	my $over = 1;
 	my $first = 1;
-	while ( my ( $result, $rname, $highpoint, $rid, $startdate, $enddate ) = $sth->fetchrow_array )
+	while ( my ( $result, $rname, $highpoint, $rid, $startdate, $enddate, $inpast ) = $sth->fetchrow_array )
 	{
-		if ( $result && length( $result ) > 10 )
+		if ( $inpast ) # $result && length( $result ) > 10 )
 		{
 			push @ret, "<tr><td><a href=\"./schedule/$rid\"><small>$rname" . ($highpoint > 1 ? " (${highpoint}x)" : '' ) . "</small></a></td>\n";
 		}
@@ -86,6 +86,7 @@ sub display_lowpoint
 	my $type = shift;
 	my $throwouts = shift || 0;
 
+
 	my @ret;
 
 	my $dbh = Myfleet::DB::connect();
@@ -140,17 +141,17 @@ sub display_lowpoint
 	{
 		foreach my $boat ( keys %boats )
 		{
-			if( !$lowpoint_score{$boat}{$regatta->{rid}}->{points} ) 
+			if( !$lowpoint_score{$boat}{$regatta->{rid}}->{points} )
 			{
 				$lowpoint_score{$boat}{$regatta->{rid}}->{points} = $regatta->{boats} + 1;
-				$lowpoint_score{$boat}{$regatta->{rid}}->{position} = 'DNC'; # ($regatta->{boats} + 1) . ' DNC';
+				$lowpoint_score{$boat}{$regatta->{rid}}->{position} = ($regatta->{boats} + 1) . ' [DNC]';
 			}
 		}
 	}
 
 	if( scalar( @regattas ) >= 2 * $throwouts )
 	{
-		foreach my $throwout ( 1 .. $throwouts ) 
+		foreach my $throwout ( 1 .. $throwouts )
 		{
 			foreach my $boat ( keys %boats )
 			{
@@ -158,7 +159,7 @@ sub display_lowpoint
 				my $highest_rid = 0;
 				foreach my $regatta ( reverse @regattas )
 				{
-					if( $lowpoint_score{$boat}{$regatta->{rid}}->{points} > $highest && 
+					if( $lowpoint_score{$boat}{$regatta->{rid}}->{points} > $highest &&
 						! $lowpoint_score{$boat}{$regatta->{rid}}->{throwout} )
 					{
 						$highest = $lowpoint_score{$boat}{$regatta->{rid}}->{points};

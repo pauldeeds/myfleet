@@ -55,8 +55,8 @@ sub display_page
 						'<td>',
 							"<big><b>$year $series->{name} Series Standings</b></big>",
 							'<br/>',
-							( $series->{'throwouts'} ? 
-								"<small>(throwouts in parantheses - $series->{throwouts} allowed)</small>" : '' ),
+							( $series->{'throwouts'} >= 1 ?
+								"<small>(throwouts in parentheses - $series->{throwouts} allowed)</small>" : '' ),
 						'</td>',
 					'</tr>',
 					'<tr>',
