@@ -16,3 +16,4 @@ apt-get install libgd-gd2-perl
 apt-get install libxml-simple-perl
 apt-get install libdigest-hmac-perl
 apt-get install perlmagick
+apt-get install libnet-amazon-s3-perl

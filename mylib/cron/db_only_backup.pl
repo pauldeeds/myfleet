@@ -1,8 +1,14 @@
 #!/usr/local/bin/perl
 use strict;
 
+use lib '/home/pdeeds/src/myfleet/mylib/myfleet.org/';
+
+use Myfleet::S3;
+use Net::Amazon::S3;
+use Net::Amazon::S3::Client;
+
 my $local_backup_dir = '/var/www/backups/';
-# my $scp = "root\@diskstation:/volume1/m5backup/"; # must set up ssh keys for this to work
+my %s3_conf = Myfleet::S3::parseConfig();
 my $scp = "pdeeds\@sfrents.org:~/remote_backup/"; # must set up ssh keys for this to work
 
 my $site;
@@ -23,6 +29,7 @@ if( scalar(@ARGV) == 3 ) {
 -d $local_backup_dir || die "Directory $local_backup_dir not found.\n";
 
 my @scp;
+my %filesToS3;
 
 chdir( $local_backup_dir );
 
@@ -32,6 +39,7 @@ if( $db )
 	my $db_latest = "${site}__db__latest.sql.gz";
 	`/usr/bin/mysqldump -uroot -p$mysqlpw $db | gzip > $db_file`;
 	push @scp, "scp -o StrictHostKeyChecking=no -B -l1500 $db_file $scp$db_latest";
+	$filesToS3{$db_file} = $db_file;
 }
 
 # clean up old files
@@ -52,8 +60,15 @@ while( scalar(@db_dates) > 14 )
 	`rm -f ${site}__db__${date}.sql.gz`;
 }
 
-
-foreach my $scpcmd ( @scp )
+foreach my $file ( keys(%filesToS3) )
 {
-	`$scpcmd`;
+	my $s3key = "$site/$filesToS3{$file}";
+	my $s3 = Net::Amazon::S3->new( \%s3_conf );
+	my $bucket = $s3->bucket('myfleet-backups');
+	$bucket->add_key_filename($s3key,$file, {content_type => 'application/gzip' } ) || die "Could not write $file to s3 bucket" . $s3->err . ": " . $s3->errstr;
 }
+
+#foreach my $scpcmd ( @scp )
+#{
+#	`$scpcmd`;
+#}

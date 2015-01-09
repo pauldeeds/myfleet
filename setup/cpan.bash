@@ -14,4 +14,4 @@ install XML::RSS::Parser
 #install DBD::mysql
 #install Cache::Memcached
 install Net::DNS
-install LWP::Parallel 
+install LWP::Parallel

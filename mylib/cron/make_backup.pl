@@ -1,9 +1,18 @@
 #!/usr/local/bin/perl
 use strict;
 
+use lib '/home/pdeeds/src/myfleet/mylib/myfleet.org/';
+
+use Myfleet::S3;
+use Net::Amazon::S3;
+use Net::Amazon::S3::Client;
+
 my $local_backup_dir = '/var/www/backups/';
-my $htdocs_dir = '/var/www/';
+my $htdocs_dir = '/var/www';
 my $mylib_dir = '/home/pdeeds/src/myfleet/sites/';
+
+
+my %s3_conf = Myfleet::S3::parseConfig();
 
 # must set up host key verification for this to work at a new address
 # my $scp = "root\@diskstation:/volume1/m5backup/";
@@ -31,6 +40,7 @@ if( scalar(@ARGV) == 1 ) {
 -d $mylib_dir || die "Directory $mylib_dir not found.\n";
 
 my @scp;
+my %filesToS3;
 if( -d "$htdocs_dir/$site" )
 {
 	chdir( $htdocs_dir );
@@ -39,6 +49,7 @@ if( -d "$htdocs_dir/$site" )
 	#print "tar -cpzf $htdocs_file $site/*\n";
 	`tar -cpzf $htdocs_file $site/*`;
 	push @scp, "scp -o StrictHostKeyChecking=no -B -l1500 $htdocs_file $scp$htdocs_latest";
+	$filesToS3{$htdocs_file} = "${site}__htdocs__${today}.tar.gz";
 }
 else
 {
@@ -53,6 +64,7 @@ if( -d "$mylib_dir/$site" )
 	#print "tar -cpzf $mylib_file $site/*\n";
 	`tar -cpzf $mylib_file $site/*`;
 	push @scp, "scp -o StrictHostKeyChecking=no -B -l1500 $mylib_file $scp$mylib_latest";
+	$filesToS3{$mylib_file} = "${site}__mylib__${today}.tar.gz";
 }
 else
 {
@@ -72,6 +84,9 @@ if( $site eq 'mailman' )
 
 	push @scp, "scp -o StrictHostKeyChecking=no -B -l1500 $mailman_lists_file $scp$mailman_lists_latest";
 	push @scp, "scp -o StrictHostKeyChecking=no -B -l1500 $mailman_archives_file $scp$mailman_archives_latest";
+
+	$filesToS3{$mailman_lists_file} = "${site}__lists__${today}.tar.gz";
+	$filesToS3{$mailman_archives_file} = "${site}__archives__${today}.tar.gz";
 }
 
 chdir( $local_backup_dir );
@@ -82,6 +97,8 @@ if( $db )
 	my $db_latest = "${site}__db__latest.sql.gz";
 	`/usr/bin/mysqldump -uroot -p${mysqlpw} $db | gzip > $db_file`;
 	push @scp, "scp -o StrictHostKeyChecking=no -B -l1500 $db_file $scp$db_latest";
+
+	$filesToS3{$db_file} = $db_file;
 }
 
 # clean up old files
@@ -146,9 +163,19 @@ while( scalar(@mailman_list_dates) > 2 )
 	`rm -f ${site}__lists__${date}.sql.gz`;
 }
 
-
-foreach my $scpcmd ( @scp )
+foreach my $file ( keys(%filesToS3) )
 {
-	# print "$scpcmd\n";
-	`$scpcmd`;
+	my $s3key = "$site/$filesToS3{$file}";
+	# print "Copying $file to $s3key ...\n";
+
+    my $s3 = Net::Amazon::S3->new( \%s3_conf );
+    my $bucket = $s3->bucket('myfleet-backups');
+    $bucket->add_key_filename($s3key, $file, {content_type => 'application/gzip' } ) || die "Could not write $file to s3 bucket" . $s3->err . ": " . $s3->errstr;
 }
+
+
+#foreach my $scpcmd ( @scp )
+#{
+#	# print "$scpcmd\n";
+#	`$scpcmd`;
+#}
