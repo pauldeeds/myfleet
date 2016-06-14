@@ -677,6 +677,7 @@ sub display_highpoint
 		my @dns;
 		my @rdg;
 		my @tot;
+		my @raf;
 
 		foreach ( @line )
 		{
@@ -699,7 +700,7 @@ sub display_highpoint
 				} elsif ( $race =~ /DSQ/ ) {
 					$tot[$racenum]++;
 					push @{ $dsq[$racenum] }, $boat;
-				} elsif ( $race =~ /RAF/ ) {
+				} elsif ( $race =~ /RAF/ || $race =~ /RET/ ) {
 					$tot[$racenum]++;
 					push @{ $raf[$racenum] }, $boat;
 				} elsif ( $race =~ /DNF/ || $race =~ /OCS/ ) {
@@ -720,11 +721,14 @@ sub display_highpoint
 		{
 			$actualracenum = $racenum + $racenumtot - 1;
 			$highpoint_possible[$actualracenum] = $weight * $tot[$racenum];
+
+			my $rafdnf = scalar @{$dnf[$racenum] } + scalar @{$raf[$racenum]};
+
 			foreach my $boat ( @{ $dnf[$racenum] } ) {
-				$highpoint_score{$boat}[$actualracenum] = $weight * ( 0.5 * ( scalar @{ $dnf[$racenum] } + 1));
+				$highpoint_score{$boat}[$actualracenum] = $weight * ( 0.5 * ($rafdnf + 1));
 			}
 			foreach my $boat ( @{ $raf[$racenum] } ) {
-				$highpoint_score{$boat}[$actualracenum] = $weight * ( 0.5 * ( scalar @{ $raf[$racenum] } + 1));
+				$highpoint_score{$boat}[$actualracenum] = $weight * ( 0.5 * ($rafdnf + 1));
 			}
 			foreach my $boat ( @{ $dsq[$racenum] } ) {
 				# $highpoint_score{$boat}[$racenumtot] = 0;
@@ -946,7 +950,6 @@ sub display_highpoint
 				"<td>&nbsp;",
 				"<td align=right><small><b>", sprintf("%.2f", $totscore{$boat}), "</b></small>",
 				"<td align=center><font size=-2>($highpoint_t_total{$boat}&nbsp;/&nbsp;$highpoint_t_possible{$boat})</font>\n";
-			
 		}
 
 		if ( $format eq 'All' ) {
@@ -969,6 +972,13 @@ sub display_highpoint
 	push @ret, "</table>";
 	push @ret, "<center><small><i>$realracetotal possible races so far, $qualifytotal required to qualify (50% or more).  <a href=\"/throwouts/?races=$realracetotal\">throwout schedule</a></i></small></center>";
         push @ret, "<center><small><a href=\"/articles/seasonscoring\">Season scoring calculation explanation</a></small></center>";
+
+	#push @ret, '<pre>';
+	#push @ret, Dumper( @regattas ), '<hr/>';
+	#push @ret, Dumper( @raf ), '<hr/>';
+	#push @ret, Dumper( %highpoint_score), '<hr/>';
+	#push @ret, '</pre>';
+
 	return @ret;
 }
 
@@ -1028,7 +1038,7 @@ sub display_pure_highpoint
 				} elsif ( $race =~ /DSQ/ ) {
 					$tot[$racenum]++;
 					push @{ $dsq[$racenum] }, $boat;
-				} elsif ( $race =~ /RAF/ ) {
+				} elsif ( $race =~ /RAF/ || $race =~ /RET/ ) {
 					$tot[$racenum]++;
 					push @{ $raf[$racenum] }, $boat;
 				} elsif ( $race =~ /DNF/ || $race =~ /OCS/ ) {
