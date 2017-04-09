@@ -125,7 +125,12 @@ sub display_page
 			$p{'msg'} =~ /powderbond/i ||
 			$p{'msg'} =~ /benwis/i ||
 			$p{'msg'} =~ /oemresources/i ||
-			$p{'msg'} =~ /ruiyu/i )
+			$p{'msg'} =~ /ruiyu/i  ||
+			$p{'msg'} =~ /cymbalta/i  ||
+			$p{'msg'} =~ /cialis/i ||
+			$p{'msg'} =~ /wellbutrin/i ||
+			$p{'msg'} =~ /wh0cd\d+/i
+		)
 		{
 			push @alerts, 'Please stop spamming our message boards.  Links in messages are all NO FOLLOW.';
 		} 
