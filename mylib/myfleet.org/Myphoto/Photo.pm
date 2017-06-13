@@ -135,17 +135,6 @@ sub display_page
 
 	my @ret;
 
-	my $gallery = $q->param('gallery') || $q->param('gallery_upload') || 1;
-
-	# DO NEW GALLERY PROCESSING
-	if ( $q->param('gallery_name') )
-	{
-		$gallery = insert_gallery( $q->param('gallery_name'), $q->param('gallery_desc') );
-		$gallery_upload = $gallery;
-		$q->param('gallery_name',"");
-		$q->param('gallery_desc',"");
-	}
-
 	# LOAD GALLERY LIST
 	my %gallery_name;
 	my @gallery_id;
@@ -161,6 +150,18 @@ sub display_page
 		$gallery_count{$g->{'id'}} = $g->{'num'} || 0;
 		$gallery_hide{$g->{'id'}} = $g->{'hide'} || 0;
 	}
+
+	my $gallery = $q->param('gallery') || $q->param('gallery_upload') || $gallery_id[0];
+
+	# DO NEW GALLERY PROCESSING
+	if ( $q->param('gallery_name') )
+	{
+		$gallery = insert_gallery( $q->param('gallery_name'), $q->param('gallery_desc') );
+		$gallery_upload = $gallery;
+		$q->param('gallery_name',"");
+		$q->param('gallery_desc',"");
+	}
+
 
 	push @ret,$q->header;
 	if( $photoconfig{'header'} eq 'myfleet' ) {
