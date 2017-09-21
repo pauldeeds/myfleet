@@ -31,6 +31,7 @@ sub display_page
 			"<li><a href=\"photo/\">Edit Photos</a></li>",
 			"<li><a href=\"config/\">View Configuration Settings</a></li>",
 			"<li><a href=\"/msgs/\">Edit Messages</a> (just use 'deletePassword' from config to delete messages)</li>",
+			"<li><a href=\"msgs/\">Deal with spam on message boards</a></li>",
 		"</ul>",
 		Myfleet::Header::display_footer();
 
