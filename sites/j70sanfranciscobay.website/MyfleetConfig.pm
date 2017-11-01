@@ -45,7 +45,7 @@ require Exporter;
 		'For Sale' => '/msgs/?f=2',
 		# 'Email List' => '/articles/emaillist',
 		'Articles' => '/articles/articlelist',
-		'Photos' => '/photos/',
+		'Photos' => '/photos/?gallery=126',
 		'Rules' => '/articles/rules',
 		'Dues' => '/dues/',
 	},
