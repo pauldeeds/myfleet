@@ -3,15 +3,15 @@ use CGI::Carp qw(fatalsToBrowser);
 use Myfleet::Header;
 use Myfleet::DB;
 use Myfleet::Util;
-use Authen::Captcha;
+use Captcha::reCAPTCHA::V2;
 use File::Path;
-use Data::Dumper;
 
 use diagnostics;
 use strict;
 
 package Myfleet::Crew;
 
+use Data::Dumper qw(Dumper);
 use MyfleetConfig qw(%config);
 
 sub display_roster
@@ -400,12 +400,7 @@ sub display_detail
 
 	$q->param('i') || die "no user id specified.";
 
-	my $output_folder = $ENV{'DOCUMENT_ROOT'} . '/captcha/';
-	my $data_folder = $ENV{'DOCUMENT_ROOT'} . '../captcha/' . $ENV{'SERVER_NAME'};
-	if( ! -e $data_folder ) { File::Path::mkpath($data_folder); }
-	my $captcha = Authen::Captcha->new();
-	$captcha->data_folder( $data_folder );
-	$captcha->output_folder( $output_folder );
+	my $recaptcha = Captcha::reCAPTCHA::V2->new;
 
 	my $dbh = Myfleet::DB::connect();
 	my $sth = $dbh->prepare("select id, firstname, lastname, city, state, password, phone, email, height, weight, positions, note, date_format(lastupdate, '%m-%d-%y') from crew where id = ?") || die $DBI::errstr;
@@ -417,7 +412,14 @@ sub display_detail
 	push @ret, $q->start_html("$firstname $lastname");
 	push @ret, "&laquo; <a href=\"javascript:self.close()\">close window</a><br/><br/>";
 
-	if( $q->param('md5') && $q->param('code') && $captcha->check_code($q->param('code'),$q->param('md5')) == 1 )
+	my $recaptchaResult;
+	if ($q->param('g-recaptcha-response'))
+	{
+		$recaptchaResult = $recaptcha->verify('6Lcw0DYUAAAAAB8pu_sPz2UqHZwykqcDp_9_sRuQ', $q->param('g-recaptcha-response'));
+	}
+
+
+	if(defined($recaptchaResult) && $recaptchaResult->{success})
 	{
 		my $obscuredEmail = Myfleet::Util::obscureEmail( $email );
 		my $dHeight = int($height/12) . "'" . $height % 12 . '"';
@@ -439,28 +441,14 @@ sub display_detail
 	}
 	else
 	{
-	 	my $md5sum = $captcha->generate_code(4);
-
-
-		if( $q->param('md5') && $q->param('code') )
-		{
-			push @ret, '<span style="color:#f00;">Text does not match, please try again.</span><br/>';
-			$q->param('md5',$md5sum); $q->param('code','');
-		}
-
 		push @ret,
 			"<b>Fetching information for $firstname $lastname</b><br/><small>(Please confirm that you are human)</small>";
 
 		push @ret,
 				'<form method="post" action="">',
 					$q->param('i') ? $q->hidden( -name=>'i' ) : $q->hidden( -name=>'e' ),
-					$q->hidden( -name=>'md5', -value=>$md5sum ),
-					'<div style="height:41px; line-height:41px; vertical-align:middle; border:1px solid #ccc; padding:3px; width:400px; text-align:center;">',
-						 "<img src=\"/captcha/$md5sum.png\" style=\"width:100px; height:35px; vertical-align:middle; margin-right:10px;\" /> ",
-						'Enter distorted text: ',
-						'<input name="code" size="4" /> ',
-						'<input type="submit" value="Submit" />',
-					'</div>',
+					$recaptcha->html('6Lcw0DYUAAAAAKBPzH_hgAP2Dj3j3ppfbHOBVTId'),
+					'<input type="submit" value="Submit" />',
 				'</form>';
 	}
 

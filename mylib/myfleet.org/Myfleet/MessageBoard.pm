@@ -9,11 +9,12 @@ use Myfleet::Google;
 use Myfleet::GPS;
 use XML::RSS;
 use Data::Dumper;
-use Authen::Captcha;
+use Captcha::reCAPTCHA::V2;
 use File::Path;
 
 package Myfleet::MessageBoard;
 
+use Data::Dumper qw(Dumper);
 use MyfleetConfig qw(%config);
 use Text::Wrap qw($huge);
 $huge = 'overflow'; # causes long words to overflow rather than wrap (for urls)
@@ -98,17 +99,7 @@ sub display_page
 		$page_title = "$forum_name";
 	}
 
-	my $output_folder = $ENV{'DOCUMENT_ROOT'} . '/captcha/';
-	my $data_folder = $ENV{'DOCUMENT_ROOT'} . '../captcha/' . $ENV{'SERVER_NAME'};
-	if( ! -e $data_folder ) { File::Path::mkpath($data_folder); }
-	my $captcha = Authen::Captcha->new();
-	my $md5sum;
-	if( defined $p{'pm'} || defined $p{'p'} )
-	{
-		$captcha->data_folder( $data_folder );
-		$captcha->output_folder( $output_folder );
-		$md5sum = $captcha->generate_code(4);
-	}
+	my $recaptcha = Captcha::reCAPTCHA::V2->new;
 
 	if ( defined $p{'pm'} && ( $p{'pm'} eq 'Post Message' || $p{'pm'} eq 'Preview' ) )
 	{
@@ -121,7 +112,7 @@ sub display_page
 		if( $p{'name'} eq 'keiresing' ||
 			$p{'name'} eq 'powderbondchemical' ||
 			$p{'msg'} =~ /tipcell/i  ||
-			$p{'title'} =~ /tipcell/i || 
+			$p{'title'} =~ /tipcell/i ||
 			$p{'msg'} =~ /powderbond/i ||
 			$p{'msg'} =~ /benwis/i ||
 			$p{'msg'} =~ /oemresources/i ||
@@ -129,22 +120,49 @@ sub display_page
 			$p{'msg'} =~ /cymbalta/i  ||
 			$p{'msg'} =~ /cialis/i ||
 			$p{'msg'} =~ /wellbutrin/i ||
-			$p{'msg'} =~ /wh0cd\d+/i
+			$p{'msg'} =~ /wh0cd\d+/i ||
+			$p{'msg'} =~ /advair/i ||
+			$p{'msg'} =~ /sildenafil/i ||
+			$p{'msg'} =~ /sildenafil/i ||
+			$p{'msg'} =~ /buspar/i ||
+			$p{'msg'} =~ /zithromax/i ||
+			$p{'msg'} =~ /paxil/i ||
+			$p{'msg'} =~ /crestor/i ||
+			$p{'msg'} =~ /cromid/i ||
+			$p{'msg'} =~ /levitra/i ||
+			$p{'msg'} =~ /augmentin/i ||
+			$p{'msg'} =~ /fluoxetine/i ||
+			$p{'msg'} =~ /tadalis/i ||
+			$p{'msg'} =~ /tadalafil/i ||
+			$p{'msg'} =~ /sex chat/i ||
+			$p{'msg'} =~ /webcam/i ||
+			$p{'msg'} =~ /write essay/i ||
+			$p{'msg'} =~ /short term loan/i ||
+			$p{'msg'} =~ /no credit check/i ||
+			$p{'msg'} =~ /bad credit/i ||
+			$p{'msg'} =~ /slot machine/i ||
+			$p{'msg'} =~ /sex girl/i ||
+			$p{'msg'} =~ /tadalis/i ||
+			$p{'msg'} =~ /antabuse/i ||
+			$p{'msg'} =~ /essay writing/i ||
+			$p{'msg'} =~ /essay online/i ||
+			$p{'msg'} =~ /payday loan/i
 		)
 		{
 			push @alerts, 'Please stop spamming our message boards.  Links in messages are all NO FOLLOW.';
-		} 
+		}
+
+		my $recaptchaResult;
+		if ($q->param('g-recaptcha-response'))
+		{
+			$captchaResult = $recaptcha->verify('6Lcw0DYUAAAAAB8pu_sPz2UqHZwykqcDp_9_sRuQ', $q->param('g-recaptcha-response'));
+		}
 
 		if( $p{'pm'} eq 'Post Message' )
 		{
-			if( ! $q->param('md5') || ! $q->param('code') )
+			if( ! defined($captchaResult) || ! $captchaResult->{success})
 			{
-				push @alerts, "Please enter the distorted text in order to post your message.";
-			}
-			elsif( $captcha->check_code($q->param('code'),$q->param('md5')) != 1 )
-			{
-				push @alerts, "Your text did not match the distorted text, please try again.";
-				$q->param('md5',$md5sum); $q->param('code','');
+				push @alerts, "Please confirm that you are not a robot in order to post your message.";
 			}
 		}
 
@@ -363,10 +381,9 @@ sub display_page
 			$q->hidden(-name=>'t'),
 			$q->hidden(-name=>'f'),
 			$q->hidden(-name=>'replyto'),
-			$q->hidden(-name=>'md5', -value=>$md5sum),
+
 			'<br/>',
-			"<img src=\"/captcha/$md5sum.png\" style=\"width:100px; height:35px; float:left;\" /> ",
-			'<div style="height:35px; padding-left:10px;"><input name="code" size="4" style="vertical-align:middle; height:35px; font-size:25px; padding:0px; 5px;" /> <b>Enter Distorted Text to Post</b></div>',
+			$recaptcha->html('6Lcw0DYUAAAAAKBPzH_hgAP2Dj3j3ppfbHOBVTId'),
 			'<br/>',
 			$q->submit(-value=>'Post Message', -name=>'pm'),
 			' ',
