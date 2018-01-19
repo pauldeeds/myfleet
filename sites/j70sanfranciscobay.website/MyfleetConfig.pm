@@ -58,7 +58,7 @@ require Exporter;
 	'crewPositions' => ['Bow','Jib/Spinnaker Trimmer','Main Trimmer','Driver'],
 
 	# schedule
-	'defaultYear' => 2017,
+	'defaultYear' => 2018,
 	'series' => [
 		{
 			'name' => 'J70 San Francisco',

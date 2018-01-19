@@ -55,7 +55,7 @@ require Exporter;
 	'crewPositions' => ['Bow','Mast','Pit','Trim','Helm'],
 
 	# schedule
-	'defaultYear' => 2017,
+	'defaultYear' => 2018,
 	'series' => [
 		{
 			'name' => 'SF Championship',

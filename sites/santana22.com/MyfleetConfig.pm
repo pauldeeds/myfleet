@@ -58,7 +58,7 @@ require Exporter;
 	'crewPositions' => ['Bow','Trim','Helm'],
 
 	# schedule
-	'defaultYear' => 2017,
+	'defaultYear' => 2018,
 	'series' => [
 		{
 			'name' => 'Spinnaker',
