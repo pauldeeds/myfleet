@@ -9,7 +9,7 @@ require Exporter;
 # database
 %config = (
 	# domain name
-	'domain' => 'svendsens-grand-prix.myfleet.org',
+	'domain' => 'westcoastsailing-grand-prix.myfleet.org',
 
 	# database
 	'dbname' => 'sven',
@@ -26,9 +26,9 @@ require Exporter;
 	'analyticsId' => 'UA-242507-22',
 
 	# header
-	'defaultTitle' => 'Svendsen\'s Grand Prix',
-	'headerHtml' => '<span style="float:left"><img src="/i/svendsens_header_logo.gif" width="316" height="90" alt="Svendsen\'s Boat Works"/></span> <h1>Svendsen\'s Grand Prix</h1>',
-	'style' => 'svendsens-grand-prix.css',
+	'defaultTitle' => 'West Coast Sailing Grand Prix',
+	'headerHtml' => '<span style="float:left"><img src="/i/westcoastsailing_header_logo.jpg" width="768" height="173" alt="West Coast Sailing"/></span> <h1>West Coast Sailing Grand Prix</h1>',
+	'style' => 'westcoastsailing-grand-prix.css',
 	'menuItems' => [ 'Home', 'Events', 'Messages', 'Rules', 'Links', 'Photos' ],
 	'menuHrefs' => {
 		'Home' => '/',
@@ -49,7 +49,7 @@ require Exporter;
 	# 'crewPositions' => ['Helm','Crew'],
 
 	# schedule
-	'defaultYear' => 2018,
+	'defaultYear' => 2019,
 	'series' => [
         {
             'name' => 'Standard',

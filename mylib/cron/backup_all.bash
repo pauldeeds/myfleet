@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/home/pdeeds/src/myfleet/mylib/cron/make_backup.pl svendsens-grand-prix.myfleet.org sven ntapk99
+/home/pdeeds/src/myfleet/mylib/cron/make_backup.pl westcoastsailing-grand-prix.myfleet.org sven ntapk99
 /home/pdeeds/src/myfleet/mylib/cron/make_backup.pl j24fleet155.myfleet.org j24fleet155 ntapk99
 /home/pdeeds/src/myfleet/mylib/cron/make_backup.pl j24district21.myfleet.org j24fleet21 ntapk99
 /home/pdeeds/src/myfleet/mylib/cron/make_backup.pl rycsunday.myfleet.org rycsunday ntapk99
