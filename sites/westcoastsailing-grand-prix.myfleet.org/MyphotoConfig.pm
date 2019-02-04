@@ -7,7 +7,7 @@ require Exporter;
 
 %photoconfig = (
 	# general
-	'title' => 'Svendsen\'s Grand Prix Photos',
+	'title' => 'West Coast Sailing Grand Prix Photos',
 	'header' => 'myfleet',
 
 	# database
