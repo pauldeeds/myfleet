@@ -6,7 +6,12 @@ ul li { margin:0 0 1em 0; }
 
 /* header div wraps header html plus menu */
 #header { width:100%; }
-#header h1 { font-family:"Comic Sans MS",arial,helvetica,sans-serif; }
+
+#header #titlewrap { width:100%; height:125px; }
+	#header #logoimg { float:left; padding-right:10px; }
+	#header #wordswrap { float:left; }
+		#header h1 { font-family:"Comic Sans MS",arial,helvetica,sans-serif; padding:0; margin:18px 0 0 0; display:inline; float:left; }
+		#header #planefun { clear:left; font-size:1.2em; font-style:italic; font-weight:bold; color:blue; }
 
 /* menu table */
 #menubar table { width:100%; padding:0.3em 0 0.3em 0; }

@@ -27,6 +27,17 @@ sub display_page
 
 	my $dbh = Myfleet::DB::connect();
 
+	my $sth = $dbh->prepare("select distinct year(startdate) year from regatta order by year desc");
+	$sth->execute();
+	my @years;
+	while( my ( $y ) = $sth->fetchrow_array ) {
+		push @years, $y;
+	}
+
+	my $current_year = (localtime)[5] + 1900;
+ 	my $year = $q->param('year') || $years[0] || $current_year;
+
+
 	my $year = $q->param('year') || $config{'defaultYear'};
 
 	if( ! $q->param('series') )
@@ -43,6 +54,29 @@ sub display_page
 
 		return @ret;
 	}
+
+	push @ret,
+		'<table border="0" cellpadding="4" cellspacing="0" width="100%">',
+			'<tr bgcolor="silver">',
+				'<td><big>Series Scores</big></td>',
+				'<td align="right">',
+					'Years:';
+	foreach my $y (@years)
+	{
+		if ($y >= 2002) # express scoring started this year
+		{
+			if ($y == $year)
+			{
+				push @ret, " $y";
+			}
+			else
+			{
+				push @ret, " <a href=\"?year=$y\">$y</a>";
+			}
+		}
+	}
+
+	push @ret, '</td></tr><table>';
 
 	foreach my $series ( @{$config{'series'}} )
 	{

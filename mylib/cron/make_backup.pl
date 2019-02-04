@@ -115,10 +115,6 @@ foreach my $file ( sort( readdir(DIR) ) )
 	{
 		push @htdocs_dates, $1;
 	}
-	elsif( $file =~ /^${site}__mylib__(\d{8})\.tar\.gz$/ )
-	{
-		push @mylib_dates, $1;
-	}
 	elsif( $file =~ /^${site}__db__(\d{8})\.sql.gz$/ )
 	{
 		push @db_dates, $1;
@@ -133,34 +129,28 @@ foreach my $file ( sort( readdir(DIR) ) )
 	}
 }
 
-while( scalar(@htdocs_dates) > 2 )
+while( scalar(@htdocs_dates) > 1 )
 {
 	my $date = shift(@htdocs_dates);
-	`rm -f ${site}__htdocs__${date}.tar.gz`;
-}
-
-while( scalar(@mylib_dates) > 2 )
-{
-	my $date = shift(@mylib_dates);
-	`rm -f ${site}__mylib__${date}.tar.gz`;
+	`rm -f ${local_backup_dir}${site}__htdocs__${date}.tar.gz`;
 }
 
 while( scalar(@db_dates) > 2 )
 {
 	my $date = shift(@db_dates);
-	`rm -f ${site}__db__${date}.sql.gz`;
+	`rm -f ${local_backup_dir}${site}__db__${date}.sql.gz`;
 }
 
 while( scalar(@mailman_dates) > 2 )
 {
 	my $date = shift(@mailman_dates);
-	`rm -f ${site}__archives__${date}.sql.gz`;
+	`rm -f ${local_backup_dir}${site}__archives__${date}.tar.gz`;
 }
 
 while( scalar(@mailman_list_dates) > 2 )
 {
 	my $date = shift(@mailman_list_dates);
-	`rm -f ${site}__lists__${date}.sql.gz`;
+	`rm -f ${local_backup_dir}${site}__lists__${date}.tar.gz`;
 }
 
 foreach my $file ( keys(%filesToS3) )

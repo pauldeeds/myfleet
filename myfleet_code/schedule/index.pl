@@ -90,7 +90,7 @@ sub display_page
 		}
 
 		my $current_year = (localtime)[5] + 1900;
-		my $year = $q->param('y') || $current_year; # $years[0];
+		my $year = $q->param('y') || $years[0] || $current_year; # $current_year; # $years[0];
 		my $series = $q->param('series') || '';
 
 		my @seriesLegend;
