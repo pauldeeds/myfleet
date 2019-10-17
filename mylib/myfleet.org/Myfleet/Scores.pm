@@ -731,8 +731,10 @@ sub display_highpoint
 				$highpoint_score{$boat}[$actualracenum] = $weight * ( 0.5 * ($rafdnf + 1));
 			}
 			foreach my $boat ( @{ $dsq[$racenum] } ) {
-				# $highpoint_score{$boat}[$racenumtot] = 0;
-				$highpoint_score{$boat}[$actualracenum] = '0.0';
+				$highpoint_score{$boat}[$racenumtot] = 0;
+
+				# use to make DSQ not discardable
+				# $highpoint_score{$boat}[$actualracenum] = '0.0';
 			}
 			foreach my $boat ( keys %{ $res[$racenum] } ) {
 				$highpoint_score{$boat}[$actualracenum] = $weight * (( $tot[$racenum] + 1 ) - ${ $res[$racenum]}{$boat});
