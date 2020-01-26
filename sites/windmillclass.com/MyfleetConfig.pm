@@ -60,7 +60,7 @@ require Exporter;
 	'crewPositions' => ['Skipper','Crew'],
 
 	# schedule
-	'defaultYear' => 2019,
+	'defaultYear' => 2020,
 
 	# dues
 	'dues1' => 'Active',
