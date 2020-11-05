@@ -63,9 +63,9 @@ require Exporter;
 			'dbname' => 'series1',
 			'style' => 'bold',
 			# 'prelim' => 1,
-			'showScheduleOnHomePage' => 1,
-			'showResultsOnHomePage' => 0,
-			'showNextOnHomePage' => 1
+			'showScheduleOnHomePage' => 0,
+			'showResultsOnHomePage' => 1,
+			'showNextOnHomePage' => 0
 		},
 		{
 			'name' => 'SF Long Distance',
@@ -73,9 +73,9 @@ require Exporter;
 			'dbname' => 'series2',
 			'style' => 'asterisk',
 			# 'prelim' => 1,
-			'showScheduleOnHomePage' => 1,
-			'showResultsOnHomePage' => 0,
-			'showNextOnHomePage' => 1
+			'showScheduleOnHomePage' => 0,
+			'showResultsOnHomePage' => 1,
+			'showNextOnHomePage' => 0
 		},
 		{
 			'name' => 'SF Midwinter',
@@ -104,13 +104,31 @@ require Exporter;
 			'showResultsOnHomePage' => 0,
 			'showNextOnHomePage' => 0
 		},
+		{
+			'name' => 'Double-handed',
+			'scoring' => 'highpoint',
+			'dbname' => 'series6',
+			'style' => 'green asterisk',
+			'showScheduleOnHomePage' => 1,
+			'showResultsOnHomePage' => 1,
+			'showNextOnHomePage' => 1
+		},
+		{
+			'name' => 'Crewed',
+			'scoring' => 'highpoint',
+			'dbname' => 'series7',
+			'style' => 'green asterisk',
+			'showScheduleOnHomePage' => 1,
+			'showResultsOnHomePage' => 1,
+			'showNextOnHomePage' => 1
+		},
 
 	],
 
 	# dues
 	'dues1' => 'Local',
 	'dues2' => 'National',
-	
+
 	# mailing list
 	'mailingList' => 'Sf-express27',
 

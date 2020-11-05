@@ -50,7 +50,7 @@ sub display_page
 		}
 
 		my %series;
-		foreach my $s ( 'series1', 'series2', 'series3', 'series4', 'series5' ) {
+		foreach my $s ( 'series1', 'series2', 'series3', 'series4', 'series5', 'series6', 'series7' ) {
 			$series{$s} = 0;
 		}
 		foreach my $s ( $q->param('series') ) {
@@ -59,7 +59,7 @@ sub display_page
 
 		if ( @warning == 0 ) {
 			if ( $q->param('Add') eq 'Add As New Regatta' ) {
-				my $sti = $dbh->prepare("insert into regatta ( name, startdate, enddate, venue, contact, series1, series2, series3, series4, series5, url, result, description, story ) values ( ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?  )") || die $DBI::errstr;
+				my $sti = $dbh->prepare("insert into regatta ( name, startdate, enddate, venue, contact, series1, series2, series3, series4, series5, series6, series7, url, result, description, story ) values ( ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?  )") || die $DBI::errstr;
 				$sti->execute(
 					$q->param('name'),
 					$q->param('startdate'),
@@ -71,6 +71,8 @@ sub display_page
 					$series{'series3'},
 					$series{'series4'},
 					$series{'series5'},
+					$series{'series6'},
+					$series{'series7'},
 					$q->param('url'),
 					( $q->param('result') eq '' ? undef : $q->param('result') ),
 					( $q->param('description') eq '' ? undef : $q->param('description') ),
@@ -81,7 +83,7 @@ sub display_page
 			}
 			else
 			{
-				my $stu = $dbh->prepare("update regatta set name = ?, startdate = ?, enddate = ?, venue = ?, contact = ?, series1 = ?, series2 = ?, series3 = ?, series4 = ?, series5 = ?, url = ?, result = ?, description = ?, story = ? where id = ?") || die $DBI::errstr;
+				my $stu = $dbh->prepare("update regatta set name = ?, startdate = ?, enddate = ?, venue = ?, contact = ?, series1 = ?, series2 = ?, series3 = ?, series4 = ?, series5 = ?, series6 = ?, series7 = ?, url = ?, result = ?, description = ?, story = ? where id = ?") || die $DBI::errstr;
 
 				$stu->execute(
 					$q->param('name'),
@@ -94,6 +96,8 @@ sub display_page
 					$series{'series3'},
 					$series{'series4'},
 					$series{'series5'},
+					$series{'series6'},
+					$series{'series7'},
 					$q->param('url'),
 					( $q->param('result') eq '' ? undef : $q->param('result') ),
 					( $q->param('description') eq '' ? undef : $q->param('description') ),
@@ -172,7 +176,7 @@ sub display_page
 			$person_hash{$person_id} = "$person_lastname, $person_firstname";
 		}
 
-		$sth = $dbh->prepare("select id, startdate, enddate, lastupdate, name, venue, contact, series1, series2, series3, series4, series5, url, result, description, story from regatta where id = ?") || die $DBI::errstr;
+		$sth = $dbh->prepare("select id, startdate, enddate, lastupdate, name, venue, contact, series1, series2, series3, series4, series5, series6, series7, url, result, description, story from regatta where id = ?") || die $DBI::errstr;
 		$sth->execute( $q->param('r') ) || die $DBI::errstr;
 		my $regatta = $sth->fetchrow_hashref;
 
@@ -197,6 +201,7 @@ sub display_page
 			}
 		}
 		$q->param(-name=>'series', -values=>\@series_selected );
+
 
 		push @ret,
 			"<form method=post>",

@@ -20,7 +20,7 @@ sub regatta
 {
 	my $regattaid = shift;
 	my $dbh = Myfleet::DB::connect();
-	my $sth = $dbh->prepare("select regatta.id, year(startDate) as 'year', startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, unix_timestamp(startdate) as epoch_start, unix_timestamp(enddate) as epoch_end, date_format(regatta.startdate,'%Y%m%d') as ical_start, date_format(regatta.enddate,'%Y%m%d') as ical_end, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where regatta.venue = venue.id and regatta.id = ?") || die $DBI::errstr;
+	my $sth = $dbh->prepare("select regatta.id, year(startDate) as 'year', startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, unix_timestamp(startdate) as epoch_start, unix_timestamp(enddate) as epoch_end, date_format(regatta.startdate,'%Y%m%d') as ical_start, date_format(regatta.enddate,'%Y%m%d') as ical_end, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.series6, regatta.series7, regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where regatta.venue = venue.id and regatta.id = ?") || die $DBI::errstr;
 	$sth->execute($regattaid) || die $DBI::errstr;
 	my $regatta = $sth->fetchrow_hashref;
 	return $regatta;
@@ -48,7 +48,7 @@ sub display_events
 	}
 
 	my $dbh = Myfleet::DB::connect();
-	my $sth = $dbh->prepare("select regatta.id, startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, unix_timestamp(startdate) as epoch_start, unix_timestamp(enddate) as epoch_end, date_format(regatta.startdate,'%Y%m%d') as ical_start, date_format(regatta.enddate,'%Y%m%d') as ical_end, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where $seriesSql regatta.venue = venue.id and year(startdate) = ? order by orderdate, series1, series2, series3, series4, series5") || die $DBI::errstr;
+	my $sth = $dbh->prepare("select regatta.id, startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, unix_timestamp(startdate) as epoch_start, unix_timestamp(enddate) as epoch_end, date_format(regatta.startdate,'%Y%m%d') as ical_start, date_format(regatta.enddate,'%Y%m%d') as ical_end, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.series6, regatta.series7, regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where $seriesSql regatta.venue = venue.id and year(startdate) = ? order by orderdate, series1, series2, series3, series4, series5, series6, series7") || die $DBI::errstr;
 	$sth->execute( $year ) || die $DBI::errstr;
 
 
@@ -169,7 +169,7 @@ sub display_regatta_header
 	my @ret;
 
 	my $dbh = Myfleet::DB::connect();
-	my $sth = $dbh->prepare("select id, date_format(startdate,'%M %e') startdate, date_format(enddate,'%M %e') enddate, date_format(startdate,'%Y') as year, name, venue, contact, series1, series2, series3, series4, series5, url, result, description, story from regatta where id = ?") || die $DBI::errstr;
+	my $sth = $dbh->prepare("select id, date_format(startdate,'%M %e') startdate, date_format(enddate,'%M %e') enddate, date_format(startdate,'%Y') as year, name, venue, contact, series1, series2, series3, series4, series5, series6, series7,  url, result, description, story from regatta where id = ?") || die $DBI::errstr;
 	$sth->execute($id) || die $DBI::errstr;
 
 	if ($sth->rows)
@@ -216,7 +216,7 @@ sub display_regatta_csv
 	my $q = shift;
 	my $id = $q->param('r') || $q->param('f') - 1000;
 	my $dbh = Myfleet::DB::connect();
-	my $sth = $dbh->prepare("select id, date_format(startdate,'%M %e') startdate, date_format(enddate,'%M %e') enddate, name, venue, contact, series1, series2, series3, series4, series5, url, result, description, story from regatta where id = ?") || die $DBI::errstr;
+	my $sth = $dbh->prepare("select id, date_format(startdate,'%M %e') startdate, date_format(enddate,'%M %e') enddate, name, venue, contact, series1, series2, series3, series4, series5, series6, series7, url, result, description, story from regatta where id = ?") || die $DBI::errstr;
 	$sth->execute($id) || die $DBI::errstr;
 	my ( $regatta ) = $sth->fetchrow_hashref;
 	return display_regatta_result_csv( $regatta->{result} );
@@ -237,7 +237,7 @@ sub display_regatta
 	my $num_choices;
 
 	my $dbh = Myfleet::DB::connect();
-	my $sth = $dbh->prepare("select id, date_format(startdate,'%M %e') startdate, date_format(enddate,'%M %e') enddate, name, venue, contact, series1, series2, series3, series4, series5, url, result, description, story from regatta where id = ?") || die $DBI::errstr;
+	my $sth = $dbh->prepare("select id, date_format(startdate,'%M %e') startdate, date_format(enddate,'%M %e') enddate, name, venue, contact, series1, series2, series3, series4, series5, series7, series7, url, result, description, story from regatta where id = ?") || die $DBI::errstr;
 	$sth->execute($id) || die $DBI::errstr;
 	my ( $regatta ) = $sth->fetchrow_hashref;
 

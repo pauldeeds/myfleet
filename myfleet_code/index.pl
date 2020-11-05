@@ -30,7 +30,7 @@ sub display_page
 
 	# next event
 	my $next;
-	my $sth = $dbh->prepare("select regatta.id, startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where regatta.venue = venue.id and startdate >= now() order by orderdate ASC limit 1") || die $DBI::errstr;
+	my $sth = $dbh->prepare("select regatta.id, startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.series6, regatta.series7, regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where regatta.venue = venue.id and startdate >= now() order by orderdate ASC limit 1") || die $DBI::errstr;
 	$sth->execute() || die $DBI::errstr;
 	if( $sth->rows > 0 )
 	{
@@ -45,7 +45,7 @@ sub display_page
 
 	# previous event
 	my $last;
-	$sth = $dbh->prepare("select regatta.id, startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where regatta.venue = venue.id and startdate <= now() order by orderdate DESC limit 1") || die $DBI::errstr;
+	$sth = $dbh->prepare("select regatta.id, startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.series6, regatta.series7,  regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where regatta.venue = venue.id and startdate <= now() order by orderdate DESC limit 1") || die $DBI::errstr;
 	$sth->execute() || die $DBI::errstr;
 	if( $sth->rows > 0 )
 	{
@@ -70,7 +70,7 @@ sub display_page
 		# season series schedule
 		if( $series->{'showNextOnHomePage'} )
 		{
-			$sth = $dbh->prepare("select regatta.id, startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where regatta.venue = venue.id and startdate >= now() and $series->{'dbname'} <> 0 order by orderdate ASC limit 1") || die $DBI::errstr;
+			$sth = $dbh->prepare("select regatta.id, startdate orderdate, date_format(regatta.startdate,'%M %e') startdate, date_format(regatta.enddate,'%M %e') enddate, regatta.name, venue.id venueid, venue.name venuename, regatta.series1, regatta.series2, regatta.series3, regatta.series4, regatta.series5, regatta.series6, regatta.series7, regatta.url, ! isnull(regatta.result) hasresult, result,  ! isnull(regatta.description) hasdescription, ! isnull(regatta.story) hasstory from regatta, venue where regatta.venue = venue.id and startdate >= now() and $series->{'dbname'} <> 0 order by orderdate ASC limit 1") || die $DBI::errstr;
 			$sth->execute() || die $DBI::errstr;
 			if( $sth->rows > 0 )
 			{
