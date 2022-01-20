@@ -117,7 +117,7 @@ sub display_events
 					($bold?'</b>':''),
 				'</td>',
 				'<td>',
-					( $regatta->{hasresult} ? "$boats boats<br/><small>$races races" : "$boats sailing" . ( $looking ? "<br/><small>$looking looking</small>" : "") ),
+					( $regatta->{hasresult} ? "$boats boats<br/><small>$races races" : ( $config{'hide_regatta_signup'} ? '' :  "$boats sailing" . ( $looking ? "<br/><small>$looking looking</small>" : "")) ),
 				'</td>',
 				'<td align="right">',
 					($bold?'<b>':''),
@@ -337,17 +337,20 @@ sub display_regatta
 				"</td></tr></table>\n";
 		}
 
-		push @ret, "<table border=0 cellpadding=4 cellspacing=0 width=\"100%\">",
-			"<tr><td bgcolor=green><big><font color=white>Looking for a Ride or Crew</font></big></td></tr>",
-			"<tr><td>",
-				display_regatta_looking( $q ),
-			"</td></tr></table>\n";
+		if (! $config{'hide_regatta_signup'})
+		{
+			push @ret, "<table border=0 cellpadding=4 cellspacing=0 width=\"100%\">",
+				"<tr><td bgcolor=green><big><font color=white>Looking for a Ride or Crew</font></big></td></tr>",
+				"<tr><td>",
+					display_regatta_looking( $q ),
+				"</td></tr></table>\n";
 
-		push @ret, "<table border=0 cellpadding=4 cellspacing=0 width=\"100%\">",
-			"<tr><td bgcolor=green><big><font color=white>Boats Racing</font></big></td></tr>",
-			"<tr><td>",
-				display_regatta_boats( $q ),
-			"</td></tr></table>\n";
+			push @ret, "<table border=0 cellpadding=4 cellspacing=0 width=\"100%\">",
+				"<tr><td bgcolor=green><big><font color=white>Boats Racing</font></big></td></tr>",
+				"<tr><td>",
+					display_regatta_boats( $q ),
+				"</td></tr></table>\n";
+		}
 	}
 	return @ret;
 }

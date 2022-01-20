@@ -55,7 +55,8 @@ require Exporter;
 	'crewPositions' => ['Bow','Mast','Pit','Trim','Helm'],
 
 	# schedule
-	'defaultYear' => 2020,
+	'defaultYear' => 2022,
+	'hide_regatta_signup' => 0,
 	'series' => [
 		{
 			'name' => 'SF Championship',
@@ -63,8 +64,8 @@ require Exporter;
 			'dbname' => 'series1',
 			'style' => 'bold',
 			# 'prelim' => 1,
-			'showScheduleOnHomePage' => 0,
-			'showResultsOnHomePage' => 1,
+			'showScheduleOnHomePage' => 1,
+			'showResultsOnHomePage' => 0,
 			'showNextOnHomePage' => 0
 		},
 		{
@@ -73,8 +74,8 @@ require Exporter;
 			'dbname' => 'series2',
 			'style' => 'asterisk',
 			# 'prelim' => 1,
-			'showScheduleOnHomePage' => 0,
-			'showResultsOnHomePage' => 1,
+			'showScheduleOnHomePage' => 1,
+			'showResultsOnHomePage' => 0,
 			'showNextOnHomePage' => 0
 		},
 		{
@@ -109,8 +110,8 @@ require Exporter;
 			'scoring' => 'highpoint',
 			'dbname' => 'series6',
 			'style' => 'green asterisk',
-			'showScheduleOnHomePage' => 1,
-			'showResultsOnHomePage' => 1,
+			'showScheduleOnHomePage' => 0,
+			'showResultsOnHomePage' => 0,
 			'showNextOnHomePage' => 1
 		},
 		{
@@ -118,8 +119,8 @@ require Exporter;
 			'scoring' => 'highpoint',
 			'dbname' => 'series7',
 			'style' => 'green asterisk',
-			'showScheduleOnHomePage' => 1,
-			'showResultsOnHomePage' => 1,
+			'showScheduleOnHomePage' => 0,
+			'showResultsOnHomePage' => 0,
 			'showNextOnHomePage' => 1
 		},
 

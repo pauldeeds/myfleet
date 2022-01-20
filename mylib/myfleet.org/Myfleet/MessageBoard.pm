@@ -648,7 +648,11 @@ sub display_page
 					'<tr>',
 						'<td width="40%" valign="top">', 
 							Myfleet::Regatta::display_regatta( $q ),
-						'</td>',
+						'</td>';
+
+			if (! $config{'hide_regatta_signup'})
+			{
+				push @ret,
 						'<td width="60%" valign="top">',
 							'<table border="0" cellpadding="4" cellspacing="0" width="100%">',
                       	  		'<tr>',
@@ -657,7 +661,11 @@ sub display_page
 									'</td>',
 								'</tr>',
 							'</table>',
-							Myfleet::Regatta::display_regatta_form( $q ),
+							Myfleet::Regatta::display_regatta_form( $q );
+			}
+
+
+			push @ret,
 							Myfleet::GPS::display_regatta_gps( $q, $p{'r'} ),
 							"<a name=\"Message\"></a>\n",
 							'<table border="0" cellpadding="4" cellspacing="0" width="100%">',

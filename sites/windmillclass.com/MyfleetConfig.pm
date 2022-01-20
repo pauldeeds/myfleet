@@ -58,9 +58,10 @@ require Exporter;
 
 	# crew list 
 	'crewPositions' => ['Skipper','Crew'],
+	'hide_regatta_signup' => 0,
 
 	# schedule
-	'defaultYear' => 2020,
+	'defaultYear' => 2022,
 
 	# dues
 	'dues1' => 'Active',

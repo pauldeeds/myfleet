@@ -58,7 +58,8 @@ require Exporter;
 	'crewPositions' => ['Bow','Trim','Helm'],
 
 	# schedule
-	'defaultYear' => 2020,
+	'defaultYear' => 2022,
+	'hide_regatta_signup' => 1,
 	'series' => [
 		{
 			'name' => 'Spinnaker',
